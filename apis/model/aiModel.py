@@ -3,8 +3,9 @@ from typing import Optional
 
 
 class userInputParam(BaseModel):
-    prompt: str
+    prompt:  Optional[str]
     max_length: Optional[int] = 50
+    image : Optional[str] = None
 
 
 class aiRespose(BaseModel):

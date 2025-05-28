@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from apis.router import api_router
 
+
 app = FastAPI(
     title="FastAPI Example",
     description="A simple FastAPI example",
@@ -10,3 +11,9 @@ app = FastAPI(
 
 
 app.include_router(api_router, prefix="/api", tags=["api"])
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
