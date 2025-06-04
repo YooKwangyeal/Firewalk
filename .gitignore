@@ -1,1 +1,38 @@
 database.py
+
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+**/*.egg
+**/*.egg-info/
+dist/
+build/
+
+# Virtual Environment
+venv/
+.env
+
+# VSCode
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Pytest
+.pytest_cache/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Image/model files
+*.png
+*.webp
+*.jpg
+*.jpeg
+*.h5
+*.pt
+
+# Logs
+*.log
