@@ -25,3 +25,5 @@ class userPutParam(BaseModel):
     m_upper_id: str
     m_sns_key : str
     m_sns_type : str
+
+    //ㅇㅎㅎ
