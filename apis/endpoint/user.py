@@ -16,12 +16,13 @@ def selectUserInfo(params : userModel.userSelectParam):
 
 @router.post("/insertUser")
 def insert(params : userModel.userPutParam):
-    print("앱에서 받은 데이터:", params.dict())  # 추가
+    print("앱에서 받은 데이터:", params.dict())
     new_user = userModel.User(
-        m_sns_key=params.m_sns_key,
-        m_relate_type=params.m_relate_type,
         nickname=params.nickname,
-        email=params.email
+        email=params.email,
+        m_gender=params.m_gender,
+        m_sns_key=params.m_sns_key,
+        m_sns_type=params.m_sns_type,
     )
     session.add(new_user)
     session.commit()    
