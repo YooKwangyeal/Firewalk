@@ -1,4 +1,4 @@
-from sqlalchemy import Column, TEXT, INT, BIGINT
+from sqlalchemy import Column, TEXT, INT
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 
@@ -10,20 +10,18 @@ class User(Base):
     m_relate_type = Column(TEXT, nullable=False)
     m_upper_id = Column(TEXT, nullable=False)
     m_sns_key = Column(TEXT, nullable=False)
-    m_sns_type = Column(TEXT, nullable=False)
+    nickname = Column(TEXT, nullable=True)
+    email = Column(TEXT, nullable=True)
 
 class userSelectParam(BaseModel):
     m_id: int
+    m_sns_key: str
     m_relate_type: str
-    m_upper_id: str
-    m_sns_key : str
-
+    nickname: str = None
+    email: str = None
 
 class userPutParam(BaseModel):
-    m_id: int
+    m_sns_key: str
     m_relate_type: str
-    m_upper_id: str
-    m_sns_key : str
-    m_sns_type : str
-
-    //ㅇㅎㅎ
+    nickname: str = None
+    email: str = None
