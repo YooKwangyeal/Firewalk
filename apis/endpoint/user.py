@@ -26,6 +26,6 @@ def insert(params : userModel.userPutParam):
     )
     session.add(new_user)
     session.commit()    
-    userNo = new_user.u_no
+    userNo = new_user.m_id
     session.close()
     return {"userNo": userNo}
