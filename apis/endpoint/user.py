@@ -12,6 +12,7 @@ session = engine.sessionmaker()
 @router.post("/info")
 def selectUserInfo(params : userModel.userSelectParam):
     user_info = session.query(userModel.User).filter(userModel.User.m_id == params.m_id).first()
+    session.close()
     return user_info
 
 @router.post("/insertUser")
