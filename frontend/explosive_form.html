@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>폭발물 피해 평가</title>
+  </head>
+  <body>
+    <h2>폭발물 피해 평가 요청</h2>
+    <form id="explosiveForm">
+      <label
+        >폭발물 타입:
+        <input type="text" id="explosive_type" value="C4" /></label
+      ><br />
+      <label>가로(cm): <input type="number" id="width_cm" value="50" /></label
+      ><br />
+      <label>세로(cm): <input type="number" id="height_cm" value="30" /></label
+      ><br />
+      <label>높이(cm): <input type="number" id="depth_cm" value="20" /></label
+      ><br />
+      <button type="submit">평가 요청</button>
+    </form>
+    <h3>GPT 응답</h3>
+    <pre id="result"></pre>
+
+    <script>
+      document.getElementById("explosiveForm").onsubmit = async function (e) {
+        e.preventDefault();
+        document.getElementById("result").textContent = "요청 중...";
+        const data = {
+          explosive_type: document.getElementById("explosive_type").value,
+          width_cm: Number(document.getElementById("width_cm").value),
+          height_cm: Number(document.getElementById("height_cm").value),
+          depth_cm: Number(document.getElementById("depth_cm").value),
+          temperature: 0.7,
+          max_length: 500,
+          image: null,
+        };
+        const res = await fetch("http://127.0.0.1:8000/api/ai/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        document.getElementById("result").textContent = json.response;
+      };
+    </script>
+  </body>
+</html>
