@@ -4,8 +4,8 @@ from typing import Optional
 
 class userInputParam(BaseModel):
     explosive_type: Optional[str] = "C4"
-    width_cm: Optional[int] = 50
-    height_cm: Optional[int] = 30
+    width_cm: Optional[int] = 0
+    height_cm: Optional[int] = 0
     depth_cm: Optional[int] = 20
     temperature: Optional[float] = 0.7
     max_length: Optional[int] = 50
