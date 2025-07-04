@@ -100,7 +100,7 @@
           max_length: 500,
           image: null,
         };
-        const res = await fetch("http://127.0.0.1:8000/api/ai/detect", {
+        const res = await fetch("http://127.0.0.1:8000/api/ai/test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -118,6 +118,8 @@
           json.danger_zone_coords !== null
         )
           parsed += `위험 좌표: [${json.danger_zone_coords.join(", ")}]\n`;
+        if (json.summary !== undefined && json.summary !== null)
+          parsed += `요약: \n${json.summary}\n`;
         document.getElementById("parsed").textContent = parsed;
       };
     </script>

@@ -16,9 +16,14 @@ def parse_ai_response(raw_text: str) -> aiResponse:
     coord_match = re.search(r"\[([\d\.]+),\s*([\d\.]+)\]", raw_text)
     coords = [float(coord_match.group(1)), float(coord_match.group(2))] if coord_match else None
 
+    # 요약(불릿포인트) 추출
+    summary_match = re.search(r"요약:\s*([\s\S]*)", raw_text)
+    summary = summary_match.group(1).strip() if summary_match else None
+
     return aiResponse(
         response=raw_text.strip(),
         blast_radius_m=blast_radius,
         evacuation_radius_m=evacuation_radius,
-        danger_zone_coords=coords 
+        danger_zone_coords=coords,
+        summary=summary
     )

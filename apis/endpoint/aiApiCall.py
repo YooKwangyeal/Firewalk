@@ -18,30 +18,6 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # YOLO 모델은 서버 시작 시 1회만 로드
 model = YOLO("yolo11n.pt")
 
-# 하드코딩 파라미터 (예시)
-FOCAL_LENGTH_PX = 800      # 카메라 초점거리 (픽셀)
-
-def generate_plan(item: userInputParam) -> aiResponse:
-    prompt = item.prompt
-    max_length = item.max_length
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # 필요시 gpt-4로 변경
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-            max_tokens=max_length
-        )
-        result = response.choices[0].message.content
-        return aiResponse(response=result, action="")
-    except Exception as e:
-        return aiResponse(response="Error occurred", action=str(e))
-
-@router.post("/generate", response_model=aiResponse)
-def generate_text(item: userInputParam):
-    return generate_plan(item)
-
-# --- YOLO 실시간 감지 API ---
 @router.post("/detect")
 def detect_object(item: userInputParam):
     FOCAL_LENGTH_PX = 800      # 카메라 초점거리 (픽셀)

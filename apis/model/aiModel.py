@@ -8,7 +8,7 @@ class userInputParam(BaseModel):
     height_cm: Optional[int] = 0
     depth_cm: Optional[int] = 20
     temperature: Optional[float] = 0.7
-    max_length: Optional[int] = 50
+    max_length: Optional[int] = 300
     image: Optional[str] = None
 
     @property
@@ -17,6 +17,7 @@ class userInputParam(BaseModel):
             "당신은 폭발 피해 평가 전문가입니다.\n\n"
             "사용자로부터 폭발물이 의심되는 객체 정보가 주어졌습니다.\n"
             "아래 입력값을 바탕으로 예상 피해 범위 및 대응 가이드를 작성해 주세요.\n"
+            "현재 폭발 위치는 서울역으로 가정합니다.\n"
             "다음 형식에 맞춰 반드시 한국어로만 답변하세요:\n"
             "폭발 반경: [숫자] 미터\n"
             "대피 반경: [숫자] 미터\n"
@@ -45,3 +46,4 @@ class aiResponse(BaseModel):
     blast_radius_m: Optional[int] = None
     evacuation_radius_m: Optional[int] = None
     danger_zone_coords: Optional[list] = None
+    summary: Optional[str] = None

@@ -23,7 +23,8 @@ class Sensors:
     def getWHByYoloModel():
         try:
             # 하드코딩 파라미터 (예시)
-            DISTANCE_CM = 0
+            FOCAL_LENGTH_PX = 800
+            DISTANCE_CM = 20
             NUM_FRAMES = 10
 
             width_px_list = []
@@ -44,7 +45,6 @@ class Sensors:
 
 
                     if(DISTANCE_CM > 30) :
-                        print('DISTANCE_CM  : ' ,DISTANCE_CM)
                         width_px_list.append(width_px)
                         height_px_list.append(height_px)
                         print('len(width_px_list) : ', len(width_px_list))
