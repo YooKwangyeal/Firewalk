@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>폭발물 피해 평가</title>
+    <script
+      type="text/javascript"
+      src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d1679dec9071a742fe996fbb62a6be4d"
+    ></script>
     <style>
       body {
         font-family: "맑은 고딕", sans-serif;
@@ -73,6 +77,14 @@
         margin-top: 40px;
         color: #1c2c54;
       }
+
+      #map {
+        width: 400px;
+        height: 300px;
+        margin-top: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+      }
     </style>
   </head>
   <body>
@@ -89,7 +101,20 @@
     <pre id="result"></pre>
     <div id="parsed"></div>
 
+    <h3>위험 좌표 지도</h3>
+    <div id="map"></div>
+
     <script>
+      let map, marker;
+      let lat = 37.555752;
+      let lng = 126.970102;
+      const container = document.getElementById("map");
+      const options = {
+        center: new kakao.maps.LatLng(lat, lng),
+        level: 3,
+      };
+      map = new kakao.maps.Map(container, options);
+
       document.getElementById("explosiveForm").onsubmit = async function (e) {
         e.preventDefault();
         document.getElementById("result").textContent = "요청 중...";
@@ -116,8 +141,29 @@
         if (
           json.danger_zone_coords !== undefined &&
           json.danger_zone_coords !== null
-        )
+        ) {
           parsed += `위험 좌표: [${json.danger_zone_coords.join(", ")}]\n`;
+          // 지도 중심 좌표 업데이트
+          lat = json.danger_zone_coords[0];
+          lng = json.danger_zone_coords[1];
+          map.setCenter(new kakao.maps.LatLng(lat, lng));
+          // 위험 좌표 마커 추가
+          const marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(lat, lng),
+          });
+          marker.setMap(map);
+          // 위험 영역 원 추가
+          const dangerZoneCircle = new kakao.maps.Circle({
+            center: new kakao.maps.LatLng(lat, lng),
+            radius: json.blast_radius_m,
+            strokeWeight: 2,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            fillColor: "#FF0000",
+            fillOpacity: 0.4,
+          });
+          dangerZoneCircle.setMap(map);
+        }
         if (json.summary !== undefined && json.summary !== null)
           parsed += `요약: \n${json.summary}\n`;
         document.getElementById("parsed").textContent = parsed;
