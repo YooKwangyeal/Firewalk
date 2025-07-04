@@ -3,34 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <title>폭발물 피해 평가</title>
+    <style>
+      body {
+        font-family: "맑은 고딕", sans-serif;
+        background-color: #f4f6f9;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #333;
+      }
+
+      h2 {
+        color: #1c2c54;
+        margin-bottom: 20px;
+      }
+
+      form {
+        background-color: #fff;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 15px;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-top: 5px;
+      }
+
+      button {
+        background-color: #1c2c54;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #304e91;
+      }
+
+      pre,
+      #parsed {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        white-space: pre-wrap;
+        word-break: break-word;
+        width: 400px;
+        margin-top: 20px;
+      }
+
+      h3 {
+        margin-top: 40px;
+        color: #1c2c54;
+      }
+    </style>
   </head>
   <body>
     <h2>폭발물 피해 평가 요청</h2>
     <form id="explosiveForm">
-      <label
-        >폭발물 타입:
-        <input type="text" id="explosive_type" value="C4" /></label
-      ><br />
-      <label>가로(cm): <input type="number" id="width_cm" value="50" /></label
-      ><br />
-      <label>세로(cm): <input type="number" id="height_cm" value="30" /></label
-      ><br />
-      <label>높이(cm): <input type="number" id="depth_cm" value="20" /></label
-      ><br />
+      <label for="explosive_type">
+        폭발물 타입:
+        <input type="text" id="explosive_type" value="C4" />
+      </label>
       <button type="submit">평가 요청</button>
     </form>
+
     <h3>GPT 응답</h3>
     <pre id="result"></pre>
+    <div id="parsed"></div>
 
     <script>
       document.getElementById("explosiveForm").onsubmit = async function (e) {
         e.preventDefault();
         document.getElementById("result").textContent = "요청 중...";
+        document.getElementById("parsed").textContent = "";
         const data = {
           explosive_type: document.getElementById("explosive_type").value,
-          width_cm: Number(document.getElementById("width_cm").value),
-          height_cm: Number(document.getElementById("height_cm").value),
-          depth_cm: Number(document.getElementById("depth_cm").value),
           temperature: 0.7,
           max_length: 500,
           image: null,
@@ -42,6 +107,18 @@
         });
         const json = await res.json();
         document.getElementById("result").textContent = json.response;
+
+        let parsed = "";
+        if (json.blast_radius_m !== undefined)
+          parsed += `폭발 반경: ${json.blast_radius_m} 미터\n`;
+        if (json.evacuation_radius_m !== undefined)
+          parsed += `대피 반경: ${json.evacuation_radius_m} 미터\n`;
+        if (
+          json.danger_zone_coords !== undefined &&
+          json.danger_zone_coords !== null
+        )
+          parsed += `위험 좌표: [${json.danger_zone_coords.join(", ")}]\n`;
+        document.getElementById("parsed").textContent = parsed;
       };
     </script>
   </body>
