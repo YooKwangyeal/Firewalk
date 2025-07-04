@@ -45,3 +45,10 @@ class aiResponse(BaseModel):
     blast_radius_m: Optional[int] = None
     evacuation_radius_m: Optional[int] = None
     danger_zone_coords: Optional[list] = None
+    action: str
+
+    lat : str = "37.5665"
+    lng : str = "126.978"
+    ban1 : str = "서울특별시 중구 세종대로 110"
+    ban2 : str = "서울특별시 중구 세종대로 110"
+    text : str = "서울특별시 중구 세종대로 110"

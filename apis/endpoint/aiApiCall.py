@@ -4,6 +4,9 @@ from openai import OpenAI
 import os
 from dotenv import load_dotenv
 from apis.utils.parser import parse_ai_response
+from apis.utils.Sensors import Sensors
+
+# YOLO import 및 모델 로드
 from ultralytics import YOLO
 
 router = APIRouter()
@@ -15,6 +18,30 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # YOLO 모델은 서버 시작 시 1회만 로드
 model = YOLO("yolo11n.pt")
 
+# 하드코딩 파라미터 (예시)
+FOCAL_LENGTH_PX = 800      # 카메라 초점거리 (픽셀)
+
+def generate_plan(item: userInputParam) -> aiResponse:
+    prompt = item.prompt
+    max_length = item.max_length
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",  # 필요시 gpt-4로 변경
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7,
+            max_tokens=max_length
+        )
+        result = response.choices[0].message.content
+        return aiResponse(response=result, action="")
+    except Exception as e:
+        return aiResponse(response="Error occurred", action=str(e))
+
+@router.post("/generate", response_model=aiResponse)
+def generate_text(item: userInputParam):
+    return generate_plan(item)
+
+# --- YOLO 실시간 감지 API ---
 @router.post("/detect")
 def detect_object(item: userInputParam):
     FOCAL_LENGTH_PX = 800      # 카메라 초점거리 (픽셀)
@@ -71,6 +98,35 @@ def detect_object(item: userInputParam):
             temperature=0.7,
             max_tokens=max_length
         )
+        result = response.choices[0].message.content
+        parsed = parse_ai_response(result)
+        return parsed
+    except Exception as e:
+        return aiResponse(response="Error occurred", action=str(e))
+        DISTANCE_CM += 1
+
+
+@router.post("/test", response_model=aiResponse)
+def generate_test(item: userInputParam):
+
+    explosive_type = Sensors.getExplosiveElementBySors()
+
+    width , height, depth ,msg = Sensors.getWHByYoloModel()
+
+    item.explosive_type = explosive_type
+    item.width_cm = width
+    item.height_cm = height
+    item.depth_cm = depth
+    prompt = item.prompt
+    max_length = item.max_length
+
+    try:
+        response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",  # 필요시 gpt-4로 변경
+                        messages=[{"role": "user", "content": prompt}],
+                        temperature=0.7,
+                        max_tokens=max_length
+                    )
         result = response.choices[0].message.content
         parsed = parse_ai_response(result)
         return parsed
