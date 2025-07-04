@@ -10,13 +10,6 @@ sensors : type = ['RDX', '니트로글리콜', 'TNT', '테트릴']
 # YOLO 모델은 서버 시작 시 1회만 로드
 model = YOLO("yolo11n.pt")
 
-# YOLO 모델을 사용하여 폭발물의 크기를 측정하는 클래스
-class yoloReturn(BaseModel):
-    width: Optional[float] = 0.0
-    height: Optional[float] = 0.0
-    depth: Optional[float] = 0.0
-    msg: Optional[str] = None
-
 class Sensors:
     
     def getExplosiveElementBySors():
@@ -28,11 +21,10 @@ class Sensors:
             print("sensors module is not available.")
 
     def getWHByYoloModel():
-        result = yoloReturn()
         try:
             # 하드코딩 파라미터 (예시)
             DISTANCE_CM = 0
-            NUM_FRAMES = 30
+            NUM_FRAMES = 10
 
             width_px_list = []
             height_px_list = []
@@ -51,12 +43,14 @@ class Sensors:
                     height_px = int(y2 - y1)
 
 
-                    if(NUM_FRAMES > 30) :
+                    if(DISTANCE_CM > 30) :
+                        print('DISTANCE_CM  : ' ,DISTANCE_CM)
                         width_px_list.append(width_px)
                         height_px_list.append(height_px)
+                        print('len(width_px_list) : ', len(width_px_list))
                         if len(width_px_list) >= NUM_FRAMES:
                             break
-
+                    DISTANCE_CM += 1
                 else:
                     print(f"[{idx+1}] 오브젝트를 감지하지 못했습니다.")
             # 입력값
@@ -81,18 +75,10 @@ class Sensors:
             # 높이 계산: 기울어진 화면에서의 세로 방향을 지면 기준 세로로 보정
             # 즉, 깊이 방향 → 수직 높이 보정 (틸트 각도 이용)
             object_height_m = object_depth_m * math.sin(math.radians(tilt_deg))
-            result.width = object_width_m
-            result.height = object_depth_m
-            result.depth = object_height_m
-            result.msg = "success"
             
-            return result
+            return object_width_m, object_depth_m, object_height_m, "success"
             
         except ImportError:
-            result.width = 0
-            result.height = 0
-            result.depth = 0
-            result.msg = "YoloModel is not available."
-            return result
+            return 0, 0, 0, "YoloModel is not available."
 
     

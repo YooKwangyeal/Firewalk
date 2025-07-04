@@ -131,4 +131,5 @@ def generate_test(item: userInputParam):
         parsed = parse_ai_response(result)
         return parsed
     except Exception as e:
+        print(f"Error occurred: {str(e)}")
         return aiResponse(response="Error occurred", action=str(e))
