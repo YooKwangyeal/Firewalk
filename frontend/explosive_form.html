@@ -54,9 +54,15 @@
       }
 
       @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.5; }
-        100% { opacity: 1; }
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
       }
 
       .main-container {
@@ -217,6 +223,7 @@
         color: #e5e7eb;
         line-height: 1.5;
         font-size: 14px;
+        white-space: pre-line;
       }
 
       .loading {
@@ -239,7 +246,6 @@
         border-radius: 3px;
       }
     </style>
-
   </head>
   <body>
     <div class="header">
@@ -254,22 +260,30 @@
       <div class="map-section">
         <div id="map"></div>
         <div class="map-overlay">
-          <div style="color: #00ff88; font-weight: bold; margin-bottom: 5px;">실시간 모니터링</div>
-          <div style="font-size: 12px; color: #9ca3af;">좌표: <span id="current-coords">37.2884, 127.0519</span></div>
+          <div style="color: #00ff88; font-weight: bold; margin-bottom: 5px">
+            실시간 모니터링
+          </div>
+          <div style="font-size: 12px; color: #9ca3af">
+            좌표: <span id="current-coords">37.2884, 127.0519</span>
+          </div>
         </div>
       </div>
 
       <div class="control-panel">
         <div class="panel-header">
           <h2>위험 평가 제어판</h2>
-          <div style="font-size: 12px; color: #9ca3af;">Emergency Response Control</div>
+          <div style="font-size: 12px; color: #9ca3af">
+            Emergency Response Control
+          </div>
         </div>
 
         <div class="evaluation-form">
           <form id="explosiveForm">
             <div class="form-group">
               <label class="form-label">평가 시작</label>
-              <button type="submit" class="evaluate-btn">🚨 긴급 위험 평가</button>
+              <button type="submit" class="evaluate-btn">
+                🚨 긴급 위험 평가
+              </button>
             </div>
           </form>
         </div>
@@ -295,7 +309,8 @@
 
       document.getElementById("explosiveForm").onsubmit = async function (e) {
         e.preventDefault();
-        document.getElementById("parsed").innerHTML = '<div class="loading">🔄 위험 분석 중...</div>';
+        document.getElementById("parsed").innerHTML =
+          '<div class="loading">🔄 위험 분석 중...</div>';
 
         if (marker) {
           marker.setMap(null);
@@ -337,13 +352,15 @@
           lng = json.danger_zone_coords[1];
           map.setCenter(new kakao.maps.LatLng(lat, lng));
           // 현재 좌표 표시 업데이트
-          document.getElementById("current-coords").textContent = `${lat}, ${lng}`;
+          document.getElementById(
+            "current-coords"
+          ).textContent = `${lat}, ${lng}`;
           // 위험 좌표 마커 추가
           marker = new kakao.maps.Marker({
             position: new kakao.maps.LatLng(lat, lng),
           });
           marker.setMap(map);
-          
+
           // 폭발 반경 원 추가 (빨간색)
           if (json.blast_radius_m) {
             blastCircle = new kakao.maps.Circle({
@@ -357,7 +374,7 @@
             });
             blastCircle.setMap(map);
           }
-          
+
           // 대피 반경 원 추가 (노란색)
           if (json.evacuation_radius_m) {
             evacuationCircle = new kakao.maps.Circle({
@@ -377,27 +394,40 @@
 
         // 결과를 카드 형식으로 표시
         let resultHTML = "";
-        if (json.blast_radius_m !== undefined || json.evacuation_radius_m !== undefined) {
+        if (
+          json.blast_radius_m !== undefined ||
+          json.evacuation_radius_m !== undefined
+        ) {
           resultHTML += `
             <div class="result-card">
               <div class="result-item">
                 <span class="result-label">폭발 반경</span>
-                <span class="result-value danger-value">${json.blast_radius_m || 'N/A'} m</span>
+                <span class="result-value danger-value">${
+                  json.blast_radius_m || "N/A"
+                } m</span>
               </div>
               <div class="result-item">
                 <span class="result-label">대피 반경</span>
-                <span class="result-value warning-value">${json.evacuation_radius_m || 'N/A'} m</span>
+                <span class="result-value warning-value">${
+                  json.evacuation_radius_m || "N/A"
+                } m</span>
               </div>
-              ${json.danger_zone_coords ? `
+              ${
+                json.danger_zone_coords
+                  ? `
               <div class="result-item">
                 <span class="result-label">위험 좌표</span>
-                <span class="result-value">[${json.danger_zone_coords.join(", ")}]</span>
+                <span class="result-value">[${json.danger_zone_coords.join(
+                  ", "
+                )}]</span>
               </div>
-              ` : ''}
+              `
+                  : ""
+              }
             </div>
           `;
         }
-        
+
         if (json.summary) {
           resultHTML += `
             <div class="summary-box">
@@ -406,7 +436,8 @@
           `;
         }
 
-        document.getElementById("parsed").innerHTML = resultHTML || '<div class="loading">데이터 없음</div>';
+        document.getElementById("parsed").innerHTML =
+          resultHTML || '<div class="loading">데이터 없음</div>';
       };
     </script>
   </body>

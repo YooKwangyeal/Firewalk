@@ -5,7 +5,7 @@ from ultralytics import YOLO
 import math
 import cv2
 
-sensors : type = ['RDX', '니트로글리콜', 'TNT', '테트릴']
+sensors : type = ['니트로글리콜', 'TNT', '테트릴']
 
 # YOLO 모델은 서버 시작 시 1회만 로드
 model = YOLO("yolo11n.pt")
@@ -14,7 +14,7 @@ class Sensors:
     
     def getExplosiveElementBySors():
         try:
-            idx = random.randint(0, 3)
+            idx = random.randint(0, 2)
             return sensors[idx]
         
         except ImportError:
@@ -22,7 +22,7 @@ class Sensors:
 
     def getWHByYoloModel():
         try:
-            DISTANCE_CM = 100
+            DISTANCE_CM = 50
             NUM_FRAMES = 10
 
             width_px_list = []
@@ -59,7 +59,7 @@ class Sensors:
                             width_px = int(x2 - x1)
                             height_px = int(y2 - y1)
 
-                            if DISTANCE_CM > 30:
+                            if DISTANCE_CM >= 30:
                                 width_px_list.append(width_px)
                                 height_px_list.append(height_px)
                                 print('len(width_px_list) : ', len(width_px_list))
