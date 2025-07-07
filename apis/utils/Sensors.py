@@ -22,37 +22,72 @@ class Sensors:
 
     def getWHByYoloModel():
         try:
-            # 하드코딩 파라미터 (예시)
-            FOCAL_LENGTH_PX = 800
-            DISTANCE_CM = 20
+            DISTANCE_CM = 100
             NUM_FRAMES = 10
 
             width_px_list = []
             height_px_list = []
 
-            # 웹캠에서 한 프레임만 추론 (stream=True 사용)
-            for idx, result in enumerate(model.track(0, show=False, tracker="bytetrack.yaml", stream=True)):
-                boxes = result.boxes
-                if boxes is not None and len(boxes) > 0:
-                    # 가장 큰 오브젝트 찾기
-                    max_box = max(
-                        boxes,
-                        key=lambda box: (box.xyxy[0][2] - box.xyxy[0][0]) * (box.xyxy[0][3] - box.xyxy[0][1])
-                    )
-                    x1, y1, x2, y2 = max_box.xyxy[0].tolist()
-                    width_px = int(x2 - x1)
-                    height_px = int(y2 - y1)
+            # OpenCV VideoCapture를 직접 사용하여 웹캠 제어
+            cap = cv2.VideoCapture(0)
+            
+            if not cap.isOpened():
+                return 0, 0, 0, "웹캠을 열 수 없습니다."
+            
+            try:
+                frame_count = 0
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
+                    
+                    # YOLO 모델로 단일 프레임 추론
+                    results = model.track(frame, show=False, tracker="bytetrack.yaml", persist=True)
+                    
+                    if results and len(results) > 0:
+                        result = results[0]
+                        boxes = result.boxes
+                        
+                        if boxes is not None and len(boxes) > 0:
+                            # 가장 큰 오브젝트 찾기
+                            max_box = max(
+                                boxes,
+                                key=lambda box: (box.xyxy[0][2] - box.xyxy[0][0]) * (box.xyxy[0][3] - box.xyxy[0][1])
+                            )
+                            x1, y1, x2, y2 = max_box.xyxy[0].tolist()
+                            width_px = int(x2 - x1)
+                            height_px = int(y2 - y1)
 
-
-                    if(DISTANCE_CM > 30) :
-                        width_px_list.append(width_px)
-                        height_px_list.append(height_px)
-                        print('len(width_px_list) : ', len(width_px_list))
-                        if len(width_px_list) >= NUM_FRAMES:
-                            break
-                    DISTANCE_CM += 1
-                else:
-                    print(f"[{idx+1}] 오브젝트를 감지하지 못했습니다.")
+                            if DISTANCE_CM > 30:
+                                width_px_list.append(width_px)
+                                height_px_list.append(height_px)
+                                print('len(width_px_list) : ', len(width_px_list))
+                                
+                                if len(width_px_list) >= NUM_FRAMES:
+                                    break
+                            DISTANCE_CM += 1
+                        else:
+                            print(f"[{frame_count+1}] 오브젝트를 감지하지 못했습니다.")
+                    
+                    frame_count += 1
+                    
+                    # 너무 많은 프레임을 처리하지 않도록 제한
+                    if frame_count > 100:
+                        break
+                        
+            finally:
+                # 웹캠 리소스 명시적 해제
+                cap.release()
+                cv2.destroyAllWindows()
+            
+            # 충분한 데이터를 수집하지 못한 경우 기본값 사용
+            if not width_px_list or not height_px_list:
+                width_px = 100  # 기본값
+                height_px = 100  # 기본값
+            else:
+                # 평균값 사용
+                width_px = sum(width_px_list) / len(width_px_list)
+                height_px = sum(height_px_list) / len(height_px_list)
             # 입력값
             tilt_deg = 60                      # 카메라 틸트 각도
             fov_x_deg = 90                     # 수평 화각
