@@ -27,9 +27,10 @@ class Sensors:
 
             width_px_list = []
             height_px_list = []
-
             # OpenCV VideoCapture를 직접 사용하여 웹캠 제어
-            cap = cv2.VideoCapture(0)
+            video_path = './drone.mp4'
+            res = model.track('./drone.mp4', show=True, tracker="bytetrack.yaml", stream=False)
+            cap = cv2.VideoCapture(video_path)
             
             if not cap.isOpened():
                 return 0, 0, 0, "웹캠을 열 수 없습니다."
@@ -115,5 +116,3 @@ class Sensors:
             
         except ImportError:
             return 0, 0, 0, "YoloModel is not available."
-
-    
