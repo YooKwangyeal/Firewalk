@@ -1,10 +1,25 @@
-# FireWalk: 무인이동체 기반 AI 폭발물 위험 대응 시스템
+# UWC 2025 AI & 무인이동체 퓨처 해커톤 소스 코드_FireWalk
 
 **FireWalk**는 AI 비전 기술, 무인이동 로봇(UGV), 실시간 관제 시스템을 통합하여  
 폭발물 의심 물체를 자동으로 식별·분석하고 위험을 평가하는 지능형 대응 시스템입니다.  
 지하철, 공항, 군사시설 등 주요 인프라에서의 **신속한 초기 대응**을 목표로 합니다.
 
 ---
+## [대시보드](http://localhost:8000/explosive_form?)
+---
+![연습용이미지](./desk.png)
+
+## Getting Started
+
+```bash
+# 필수 패키지 설치
+pip install -r requirements.txt
+
+# 서버 실행
+python main.py
+```
+
+
 
 ## 🔍 주요 기능
 
@@ -35,17 +50,3 @@
 | 크기 추정           | RealSense                   |
 | 프론트엔드 대시보드 | HTML + JS                   |
 | 지도 연동           | Kakao 지도 API              |
-
----
-
-## 🚀 실행 방법
-
-```bash
-# 필수 패키지 설치
-pip install -r requirements.txt
-
-# 서버 실행
-python main.py
-```
-
-## [대시보드](http://localhost:8000/explosive_form?)

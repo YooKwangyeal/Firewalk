@@ -112,6 +112,9 @@ class Sensors:
             # 즉, 깊이 방향 → 수직 높이 보정 (틸트 각도 이용)
             object_height_m = object_depth_m * math.sin(math.radians(tilt_deg))
             
+            print(f"Object dimensions in pixels: {width_px:.2f}px (width), {height_px:.2f}px (depth)")
+            print(f"Object dimensions: {object_width_m:.2f}m (width), {object_depth_m:.2f}m (depth), {object_height_m:.2f}m (height)")
+            
             return object_width_m, object_depth_m, object_height_m, "success"
             
         except ImportError:
