@@ -1,0 +1,69 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+# COCO 2017 dataset https://cocodataset.org by Microsoft
+# Documentation: https://docs.ultralytics.com/datasets/detect/coco/
+# Example usage: yolo train data=cocoData.yaml
+# Google Colab + Google Drive setup
+# Google Drive structure:
+# ├── MyDrive
+#     └── dataset
+#         ├── train/  ← train images
+#         ├── val/    ← validation images
+#         ├── test/   ← test images (optional)
+#         └── annotations/ ← COCO format JSON files
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: /content/drive/MyDrive/dataset # dataset root dir (Google Drive mount point)
+train: train/images # train images directory (relative to 'path')
+test: test/images  # test images directory (relative to 'path') (optional)
+val: val/images # val images directory (relative to 'path') 
+
+# For Google Colab, make sure to mount Google Drive first:
+# from google.colab import drive
+# drive.mount('/content/drive')
+
+# Classes
+names:
+  0: person
+  1: car
+  2: bench
+  3: backpack
+  4: handbag
+  5: suitcase
+  6: bottle
+  7: wine glass
+  8: cup
+  9: fork
+  10: knife
+  11: spoon
+  12: bowl
+  13: chair
+  14: couch
+  15: potted plant
+  16: bed
+  17: dining table
+  18: cell phone
+  19: teddy bear
+  20: hair drier
+  21: toothbrush
+
+
+# Download script/URL (optional)
+download: |
+  from pathlib import Path
+
+  from ultralytics.utils.downloads import download
+
+  # Download labels
+  segments = True  # segment or box labels
+  dir = Path(yaml["path"])  # dataset root dir
+  url = "https://github.com/ultralytics/assets/releases/download/v0.0.0/"
+  urls = [url + ("coco2017labels-segments.zip" if segments else "coco2017labels.zip")]  # labels
+  download(urls, dir=dir.parent)
+  # Download data
+  urls = [
+      "http://images.cocodataset.org/zips/train2017.zip",  # 19G, 118k images
+      "http://images.cocodataset.org/zips/val2017.zip",  # 1G, 5k images
+      "http://images.cocodataset.org/zips/test2017.zip",  # 7G, 41k images (optional)
+  ]
+  download(urls, dir=dir / "images", threads=3)
