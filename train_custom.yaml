@@ -1,0 +1,11 @@
+# Ultralytics 🚀 AGPL-3.0 License - https://ultralytics.com/license
+
+mode: train
+data: cocoData.yaml
+model: yolo11n.pt
+epochs: 100
+imgsz: 640
+batch: 64
+hsv_h: 0.03
+hsv_s: 0.6
+hsv_v: 0.5
